@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task Tracker</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div><span class="eyebrow">SRE HOMEWORK</span><h1>Task Tracker</h1></div>
+    <span id="connection-status" class="connection">Подключение…</span>
+  </header>
+  <main class="layout">
+    <aside class="sidebar panel">
+      <div class="section-heading">
+        <div><span class="eyebrow">Рабочее пространство</span><h2>Проекты</h2></div>
+        <button id="new-project" class="icon-button" type="button" title="Новый проект">+</button>
+      </div>
+      <div id="projects" class="project-list"></div>
+      <div id="project-empty" class="empty small hidden">Создайте первый проект</div>
+    </aside>
+    <section class="content panel">
+      <div class="section-heading content-heading">
+        <div>
+          <span class="eyebrow">Обзор задач</span>
+          <h2 id="current-project">Все задачи</h2>
+          <p id="current-description" class="muted">Задачи из всех проектов</p>
+        </div>
+        <button id="new-task" class="primary-button" type="button" disabled>Новая задача</button>
+      </div>
+      <div class="toolbar">
+        <label><span>Статус</span><select id="status-filter">
+          <option value="">Все</option><option value="todo">К выполнению</option>
+          <option value="in_progress">В работе</option><option value="done">Готово</option>
+        </select></label>
+        <span id="task-count" class="counter">0 задач</span>
+      </div>
+      <div id="tasks" class="task-grid"></div>
+      <div id="task-empty" class="empty">Задач пока нет</div>
+    </section>
+  </main>
+  <dialog id="project-dialog">
+    <form id="project-form" method="dialog">
+      <div class="dialog-heading">
+        <div><span class="eyebrow">Проект</span><h2 id="project-dialog-title">Новый проект</h2></div>
+        <button class="close-button" type="button" data-close="project-dialog">×</button>
+      </div>
+      <input id="project-id" type="hidden">
+      <label>Название<input id="project-name" maxlength="120" required autofocus></label>
+      <label>Описание<textarea id="project-description" maxlength="5000" rows="4"></textarea></label>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-close="project-dialog">Отмена</button>
+        <button class="primary-button" type="submit">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="task-dialog">
+    <form id="task-form" method="dialog">
+      <div class="dialog-heading">
+        <div><span class="eyebrow">Задача</span><h2 id="task-dialog-title">Новая задача</h2></div>
+        <button class="close-button" type="button" data-close="task-dialog">×</button>
+      </div>
+      <input id="task-id" type="hidden">
+      <label>Проект<select id="task-project" required></select></label>
+      <label>Название<input id="task-title" maxlength="200" required autofocus></label>
+      <label>Описание<textarea id="task-description" maxlength="5000" rows="5"></textarea></label>
+      <label>Статус<select id="task-status">
+        <option value="todo">К выполнению</option><option value="in_progress">В работе</option><option value="done">Готово</option>
+      </select></label>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-close="task-dialog">Отмена</button>
+        <button class="primary-button" type="submit">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>

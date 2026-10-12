@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-task_tracker}
+      POSTGRES_USER: ${POSTGRES_USER:-task_tracker}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-task_tracker}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  migrate:
+    build: .
+    entrypoint: ["/app/migrate"]
+    command: ["up"]
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-task_tracker}:${POSTGRES_PASSWORD:-task_tracker}@db:5432/${POSTGRES_DB:-task_tracker}?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-task_tracker}:${POSTGRES_PASSWORD:-task_tracker}@db:5432/${POSTGRES_DB:-task_tracker}?sslmode=disable
+      PORT: "8080"
+      DB_MAX_CONNS: "10"
+      SHUTDOWN_TIMEOUT: 10s
+      MIGRATE_ON_START: ${MIGRATE_ON_START:-false}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
