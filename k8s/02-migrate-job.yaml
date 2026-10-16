@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: task-tracker-migrate
+spec:
+  backoffLimit: 10
+  template:
+    metadata:
+      labels:
+        app: task-tracker-migrate
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: task-tracker:1.0
+          imagePullPolicy: Never
+          command:
+            - /app/migrate
+          args:
+            - up
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: task-tracker-secrets
+                  key: DATABASE_URL
