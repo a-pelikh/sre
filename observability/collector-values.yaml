@@ -1,0 +1,5 @@
+remoteWrite:
+  - url: http://vls-victoria-logs-single-server.logging.svc.cluster.local:9428
+
+collector:
+  extraFields: '{"cluster":"minikube"}'

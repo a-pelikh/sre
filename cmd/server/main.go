@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -18,11 +19,30 @@ import (
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	logger := newLogger()
 	if err := run(logger); err != nil {
 		logger.Error("application stopped", "error", err)
 		os.Exit(1)
 	}
+}
+
+func newLogger() *slog.Logger {
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		ReplaceAttr: func(_ []string, attr slog.Attr) slog.Attr {
+			switch attr.Key {
+			case slog.TimeKey:
+				attr.Key = "timestamp"
+			case slog.LevelKey:
+				attr.Key = "level"
+				attr.Value = slog.StringValue(strings.ToLower(attr.Value.String()))
+			case slog.MessageKey:
+				attr.Key = "message"
+			}
+			return attr
+		},
+	})
+
+	return slog.New(handler).With("service.name", "task-tracker")
 }
 
 func run(logger *slog.Logger) error {

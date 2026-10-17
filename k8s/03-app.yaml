@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: task-tracker
-          image: task-tracker:1.0
+          image: task-tracker:1.1
           imagePullPolicy: Never
           ports:
             - name: http

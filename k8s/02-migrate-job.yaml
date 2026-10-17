@@ -12,7 +12,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: migrate
-          image: task-tracker:1.0
+          image: task-tracker:1.1
           imagePullPolicy: Never
           command:
             - /app/migrate
